@@ -1,34 +1,6 @@
---Practise code
-SELECT *
-FROM #PercentPopulationVaccinated4
-CREATE TABLE #temp_table(
-EmployeeID int,
-Jobtitle varchar(100),
-salary int
-)
 
-Select *
-FROM #temp_table
-
-INSERT INTO #temp_table VALUES(
-'1001', 'HR', '45000'
-)
-FROM PortfolioProject..CovidDeaths
-Where continent is not null
-order by 3,4
-
---Select *
---FROM PortfolioProject..CovidVaccinations
---Order by 3,4
-
---Select Data that we are going to be using
-
-Select Location, date, total_cases, new_cases, total_deaths, population
-From PortfolioProject..dbo.CovidDeaths1
-Order by 1,2
-
--- Looking at total cases vs total deaths
--- Shows the likelihoof of dying if you contract covid in your country
+-- Comparing total cases vs total deaths
+-- Shows the likelihoof of dying if you contract covid in the United States
 Select Location, date, total_cases,total_deaths, (total_deaths/total_cases)*100 as DeathPercentage
 From PortfolioProject..CovidDeaths
 Where location like '%states%'
@@ -42,7 +14,7 @@ Select Location, date, total_cases,population, (total_cases/population)*100 as P
 From PortfolioProject..CovidDeaths
 Where location like '%state%'
 
---Looking at countries with highest infection rate compared to population
+--Examining Countries with highest infection rate compared to population
 
 Select Location, Population, MAX(total_cases) as HighestinfectionCount, Max((total_cases/population))*100 as PercentPolutionInfected
 From PortfolioProject..CovidDeaths
@@ -50,7 +22,7 @@ From PortfolioProject..CovidDeaths
 Group by Location, Population
 Order by PercentPolutionInfected desc
 
---LET'S BREAK THINGS DOWN BY CONTINENT
+--BREAKING THINGS DOWN BY CONTINENT
 
 Select continent, MAX(cast(total_deaths as int)) as TotalDeathCount
 From PortfolioProject..CovidDeaths
@@ -93,7 +65,7 @@ where continent is not null
 --Group by date
 order by 1,2
 
---Looking at Total Population vs Vaccinations
+--Examining Total Population vs Vaccinations (Join Function)
 
 Select dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations,
 SUM(convert(int,vac.new_vaccinations)) OVER (partition by dea.Location Order by dea.location, dea.date) as RollingPeopleVaccinated
@@ -166,14 +138,3 @@ Join PortfolioProject..CovidVaccinations vac
 
 Select *
 From PercentPopulationVaccinated1
-
---Practice
-Insert Into #PercentPopulationVaccinated6
-Select dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations
-From PortfolioProject..CovidDeaths dea
-Join PortfolioProject..CovidVaccinations vac
-	On dea.location = vac.location
- and dea.date = vac.date
-	
-Select *
-FROM #PercentPopulationVaccinated6
